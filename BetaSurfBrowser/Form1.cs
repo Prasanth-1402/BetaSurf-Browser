@@ -33,7 +33,7 @@ namespace BetaSurf
         //Debug.WriteLine("Sender Object -> " + searchText);
         //Debug.WriteLine("E - > " + e);
 
-
+        // after clicking "Search" icon button
         private async void searchButtonClick(object sender, EventArgs e)
         {
 
