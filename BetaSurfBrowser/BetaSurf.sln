@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36429.23 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetaSurf", "BetaSurfBrowser\BetaSurf.csproj", "{1AA05D76-2808-4770-8AEF-08F98F7CD5AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetaSurf", "BetaSurf.csproj", "{CDB6E75B-B611-DE85-B1A3-AE26E0ABD3B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1AA05D76-2808-4770-8AEF-08F98F7CD5AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AA05D76-2808-4770-8AEF-08F98F7CD5AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AA05D76-2808-4770-8AEF-08F98F7CD5AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AA05D76-2808-4770-8AEF-08F98F7CD5AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDB6E75B-B611-DE85-B1A3-AE26E0ABD3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB6E75B-B611-DE85-B1A3-AE26E0ABD3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB6E75B-B611-DE85-B1A3-AE26E0ABD3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB6E75B-B611-DE85-B1A3-AE26E0ABD3B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7C2F66CC-B98E-4356-943D-8D27C09F45D7}
+		SolutionGuid = {AC170D70-5AA1-419D-A260-6E96347BFB59}
 	EndGlobalSection
 EndGlobal

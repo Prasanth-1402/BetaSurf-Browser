@@ -40,16 +40,13 @@ namespace BetaSurf
             // fetching the user input from search box
             String searchText = searchBox.Text;
 
-            // using httpClient library to manage the HTTP calls
             using HttpClient client = new HttpClient();
             
-            //making a google search of whatever the user enters
             HttpResponseMessage response = await client.GetAsync("https://www.google.com/search?q=" + searchText);
 
-            //storing the user response in a variable
             HttpStatusCode responseCode = response.StatusCode;
             
-            //storing the Raw HTML 
+            //storing the response as Raw HTML 
             String rawHTML = await response.Content.ReadAsStringAsync();
 
             //displaying the Status in separate text box 
