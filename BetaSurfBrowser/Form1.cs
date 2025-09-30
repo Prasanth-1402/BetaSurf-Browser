@@ -41,8 +41,10 @@ namespace BetaSurf
             String searchText = searchBox.Text;
 
             using HttpClient client = new HttpClient();
-            
-            HttpResponseMessage response = await client.GetAsync("https://www.google.com/search?q=" + searchText);
+
+            String searchURL = searchText.Contains("http") ? searchText : "https://www.google.com/search?q=" + searchText;
+
+            HttpResponseMessage response = await client.GetAsync(searchText);
 
             HttpStatusCode responseCode = response.StatusCode;
             
