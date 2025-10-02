@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Diagnostics;
+using AngleSharp.Html.Parser;
 
 namespace BetaSurf
 {
@@ -44,21 +45,36 @@ namespace BetaSurf
 
             String searchURL = searchText.Contains("http") ? searchText : "https://www.google.com/search?q=" + searchText;
 
-            HttpResponseMessage response = await client.GetAsync(searchText);
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(searchText);
 
-            HttpStatusCode responseCode = response.StatusCode;
-            
-            //storing the response as Raw HTML 
-            String rawHTML = await response.Content.ReadAsStringAsync();
+                //displaying the Status in separate text box 
+                displayCodeBox.Text = response.StatusCode.ToString();
 
-            //displaying the Status in separate text box 
-            displayCodeBox.Text = response.StatusCode.ToString();
-
-            // displaying the Raw HTML
-            displayTextBox.Text = rawHTML;
+                String rawHTML = await response.Content.ReadAsStringAsync();
+                setTitle(rawHTML, response.StatusCode.ToString());
+                
+                // displaying the Raw HTML
+                displayTextBox.Text = rawHTML;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("Exception : "+exception);
+            }
 
         }
 
+        private void setTitle(String rawHTML, String responseCode)
+        {
+            //  using AngleSharp(third party) parser to fetch the title from the raw HTML
+            var parser = new HtmlParser();
+            var document = parser.ParseDocument(rawHTML);
+            String title = document.Title ?? "Title not found!";
+
+            this.Text = $"{responseCode} - {title}";
+            //Debug.WriteLine("Title Text: "+ this.Text);
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
 
