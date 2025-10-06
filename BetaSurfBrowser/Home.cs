@@ -1,23 +1,34 @@
-using System.Net;
-using System.Net.Http;
-using System.Diagnostics;
 using AngleSharp.Html.Parser;
-using System.Collections;
-
+using CsvHelper;
+using System.Diagnostics;
+using BetaSurf.Properties;
 namespace BetaSurf
 {
-    public partial class BetaSurf : Form
+    public partial class Home : Form
     {
         private String reloadURL;
         private String homeURL = "http://hw.ac.uk";
-        private Dictionary<String, String> bookmarks = new Dictionary<String, string>();
-        public BetaSurf()
+        private BookmarkControl bookmarkControl = new();
+        public List<BookmarkDTO> bookmarks = new(10);
+       
+        public Home()
         {
             InitializeComponent();
-            Debug.WriteLine("Constructor");
+            Debug.WriteLine("In Home Constructor");
             LoadWebContent(homeURL);
+            this.Load += async (s, e) => await LoadDataAsync();
+            Debug.WriteLine("WAITING for async data..");
         }
+        private async Task LoadDataAsync()
+        {
+            Debug.WriteLine("Loading async data..");
+            using var reader = new StreamReader(Settings.Default.BOOKMARKS_FILE);
+            using var csv = new CsvHelper.CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
+            var bookmarks = csv.GetRecords<BookmarkDTO>().ToList();
+            bookmarkControl.LoadData(bookmarks);
+            Debug.WriteLine("DONE LOADIN async data..");
 
+        }
         private void BackwardClick(object sender, EventArgs e)
         {
 
@@ -31,11 +42,15 @@ namespace BetaSurf
         {
             if (reloadURL == null) return;
             LoadWebPage();
+            Debug.WriteLine(bookmarks.Count + " is the count");
         }
 
         private void SearchButtonClick(object sender, EventArgs e)
         {
             LoadWebPage();
+            Debug.WriteLine(bookmarks.Count + " is the count");
+            bookmarkControl.LoadData(bookmarks);
+
         }
         private void LoadWebPage()
         {
@@ -59,7 +74,6 @@ namespace BetaSurf
                 displayCodeBox.Text = response.StatusCode.ToString();
                 // displaying the Raw HTML
                 displayTextBox.Text = rawHTML;
-
                 reloadURL = searchURL;
             }
             catch (Exception exception)
@@ -142,25 +156,35 @@ namespace BetaSurf
                 modifyURLTextBox.PlaceholderText = "Provide a Valid URL";
             }
         }
+        private void BookmarksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bookmarkControl.Dock = DockStyle.Fill;
+            bookmarkControl.Visible = true;
+            bookmarkControl.BringToFront();
+            bookmarksTableContainer.Controls.Clear();
+            bookmarksTableContainer.Controls.Add(bookmarkControl);
+            bookmarkControl.Show();
+            bookmarksTableContainer.Show();
+        }
 
 
         //--------------------------------  BOOKMARK -------------------------------------------
         private void BookmarkButtonClick(object sender, EventArgs e)
         {
-            //PANEL IS NOT YET VISIBLE ------------- CHECK
             bookmarkerPanel.Visible = true;
-
-            Debug.WriteLine("WORK Incoming");
             bookmarkURLBox.Text = searchBox.Text;
             String pageTitle = this.Text.Split(" - ")[1];
             bookmarkTitleBox.Text = pageTitle;
-            Debug.WriteLine("WORK DONE - "+ pageTitle + " && "+bookmarkURLBox.Text);
-            Debug.WriteLine("Bookmarks : "+ bookmarkerPanel.Visible);
         }
 
         private void AddBookmarkButtonClick(object sender, EventArgs e)
         {
-            AddToBookmark(bookmarkTitleBox.Text, bookmarkURLBox.Text);
+            if (bookmarkURLBox.Text.Length > 10)
+            {
+                AddToBookmark(bookmarkTitleBox.Text, bookmarkURLBox.Text);
+                MessageBox.Show("Bookmarked Successfully");
+            }
+            else { }
         }
 
 
@@ -168,16 +192,20 @@ namespace BetaSurf
         private void AddToBookmark(String bookmarkTitle, String url)
         {
             String bookmarkURL = ValidateURL(url);
-            bookmarks.Add(bookmarkTitle, bookmarkURL);
-
+            bookmarks.Add(new BookmarkDTO(bookmarkTitle, bookmarkURL));
+            bookmarkerPanel.Visible = false;
+            bookmarkAdded.Visible = true;
+            // write it to the file
+            String newBookmark = $"{bookmarkTitle},{bookmarkURL}";
+            File.AppendAllText(Settings.Default.BOOKMARKS_FILE, Environment.NewLine + newBookmark);
+            LoadDataAsync();
         }
-        //UTILITY METHOD
 
+        //UTILITY METHOD
         private String ValidateURL(string url)
         {
             return url.Contains("http") ? url : "https://www.google.com/search?q=" + url;
 
         }
-
     }
 }

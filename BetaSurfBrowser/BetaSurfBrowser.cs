@@ -6,7 +6,7 @@ namespace BetaSurf
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new BetaSurf());
+            Application.Run(new Home());
         }
     }
 }
