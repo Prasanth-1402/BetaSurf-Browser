@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows.Forms;
+﻿using System.Diagnostics;
 
 namespace BetaSurf
 {
@@ -14,14 +12,10 @@ namespace BetaSurf
         public void LoadData(List<BookmarkDTO> bookmarks)
         {
             BmTableControl.DataSource = bookmarks;
-
-            Debug.WriteLine($"Bookmarks: {bookmarks.Count}");
-            Debug.WriteLine("Loading Data..."+bookmarks);
         }
 
         public void getTableData()
         {
-            Debug.WriteLine("COULMNSSSS --- " + BmTableControl.ColumnCount);
             Debug.WriteLine(BmTableControl.RowCount);
         }
         private void BmTableControl_CellContentClick(object sender, EventArgs e)
@@ -39,7 +33,6 @@ namespace BetaSurf
 
             var Row = BmTableControl.Rows[e.RowIndex];
             var Title = Row.Cells["Title"].Value?.ToString();
-            var URL = Row.Cells["URL"].Value?.ToString();
 
             switch (BmTableControl.Columns[e.ColumnIndex].Name)
             {
@@ -53,20 +46,21 @@ namespace BetaSurf
                     if (IsDelete == DialogResult.OK)
                         DeleteBookmark(Title); 
                     break;
-
-                case "BmEdit":
-                    MessageBox.Show($"You are going to edit the bookmark '{Title}' ",
-                        "Warning",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    EditBookmark(Title, URL); // Editing after warning 
-                    break;
             }
         }
-
+        //TODO - Write Delete Logic
         private void DeleteBookmark(String Title) { }
 
-        private void EditBookmark(String Title, string URL) { }
 
+        private void BmTableControl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.ColumnIndex < 0)
+                return;
+
+            var Row = BmTableControl.Rows[e.RowIndex];
+            var Column = BmTableControl.Columns[e.ColumnIndex].Name;
+            var NewValue = Row.Cells[e.ColumnIndex].Value;
+            //TODO - Update the exact column/row value in the CSV file
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace BetaSurf
             bookmarkURLBox = new TextBox();
             bookmarkTitleBox = new TextBox();
             addBookmark = new Button();
-            button1 = new Button();
+            cancelBookmark = new Button();
             bookmarkURLLabel = new Label();
             bookmarkTitleLabel = new Label();
             addToBookmarkLabel = new Label();
@@ -200,7 +200,7 @@ namespace BetaSurf
             bookmarksToolStripMenuItem.Name = "bookmarksToolStripMenuItem";
             bookmarksToolStripMenuItem.Size = new Size(172, 22);
             bookmarksToolStripMenuItem.Text = "Bookmarks";
-            bookmarksToolStripMenuItem.Click += BookmarksToolStripMenuItem_Click;
+            bookmarksToolStripMenuItem.Click += OpenBookmarkFromSettingsClick;
             // 
             // refreshPageToolStripMenuItem
             // 
@@ -296,7 +296,7 @@ namespace BetaSurf
             modifyURLCancelButton.TabIndex = 1;
             modifyURLCancelButton.Text = "Cancel";
             modifyURLCancelButton.UseVisualStyleBackColor = true;
-            modifyURLCancelButton.Click += ModifyURLCancelButton_Click;
+            modifyURLCancelButton.Click += ModifyURLCancelButtonClick;
             // 
             // modifyURLTextBox
             // 
@@ -315,7 +315,7 @@ namespace BetaSurf
             bookmarkerPanel.Controls.Add(bookmarkURLBox);
             bookmarkerPanel.Controls.Add(bookmarkTitleBox);
             bookmarkerPanel.Controls.Add(addBookmark);
-            bookmarkerPanel.Controls.Add(button1);
+            bookmarkerPanel.Controls.Add(cancelBookmark);
             bookmarkerPanel.Controls.Add(bookmarkURLLabel);
             bookmarkerPanel.Controls.Add(bookmarkTitleLabel);
             bookmarkerPanel.Controls.Add(addToBookmarkLabel);
@@ -350,14 +350,15 @@ namespace BetaSurf
             addBookmark.UseVisualStyleBackColor = true;
             addBookmark.Click += AddBookmarkButtonClick;
             // 
-            // button1
+            // cancelBookmark
             // 
-            button1.Location = new Point(91, 132);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 3;
-            button1.Text = "Cancel";
-            button1.UseVisualStyleBackColor = true;
+            cancelBookmark.Location = new Point(91, 132);
+            cancelBookmark.Name = "cancelBookmark";
+            cancelBookmark.Size = new Size(75, 23);
+            cancelBookmark.TabIndex = 3;
+            cancelBookmark.Text = "Cancel";
+            cancelBookmark.UseVisualStyleBackColor = true;
+            cancelBookmark.Click += CancelBookmarkClick;
             // 
             // bookmarkURLLabel
             // 
@@ -451,7 +452,6 @@ namespace BetaSurf
             Cursor = Cursors.Hand;
             Name = "Home";
             Text = "Beta Surf";
-            Load += OnBrowserLoad;
             settingsDropDown.ResumeLayout(false);
             modifyURLPanel.ResumeLayout(false);
             modifyURLPanel.PerformLayout();
@@ -493,7 +493,7 @@ namespace BetaSurf
         private Label ModifyHomeURLLabel;
         private Panel bookmarkerPanel;
         private Button addBookmark;
-        private Button button1;
+        private Button cancelBookmark;
         private Label bookmarkURLLabel;
         private Label bookmarkTitleLabel;
         private Label addToBookmarkLabel;
