@@ -7,7 +7,7 @@ namespace BetaSurf
 {
     public partial class BookmarkControl : UserControl
     {
-        private String _previousValue;
+        private String _previousValue = "";
 
         public BookmarkControl()
         {

@@ -427,9 +427,9 @@ namespace BetaSurf
             // bookmarksTableContainer
             // 
             bookmarksTableContainer.Dock = DockStyle.Bottom;
-            bookmarksTableContainer.Location = new Point(0, 160);
+            bookmarksTableContainer.Location = new Point(0, 74);
             bookmarksTableContainer.Name = "bookmarksTableContainer";
-            bookmarksTableContainer.Size = new Size(966, 311);
+            bookmarksTableContainer.Size = new Size(966, 397);
             bookmarksTableContainer.TabIndex = 13;
             bookmarksTableContainer.Visible = false;
             // 
