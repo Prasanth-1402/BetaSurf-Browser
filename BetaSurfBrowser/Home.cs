@@ -1,54 +1,82 @@
 using System.Diagnostics;
 using BetaSurf.Properties;
+using HtmlAgilityPack;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
+
 namespace BetaSurf
 {
     public partial class Home : Form
     {
-        private String? reloadURL;
-        private static String homeURL = "http://hw.ac.uk";
+        private String? ReloadURL;
+        private static String HomeURL = "http://hw.ac.uk";
         private BookmarkControl BookmarkController;
-        public List<BookmarkDTO> bookmarks;
-       
+        public List<BookmarkDTO> Bookmarks;
+        private Stack<String> ForwardStack = new(5);
+        private Stack<String> BackStack = new(5);
+        private HashSet<String> ForwardSet = new(5);
+        private HashSet<String> BackSet = new(5);
+        private String CurrentURL = HomeURL;
         public Home()
         {
             InitializeComponent();
-            LoadWebContent(homeURL);
+            SearchBox.Text = HomeURL;
+            LoadWebContent(HomeURL);
             BookmarkController = new();
-            bookmarks = new(10);
+            Bookmarks = new(10);
+            BackStack.Push(HomeURL);
             this.Load += async (s, e) => await LoadBookmarksDataFromCSV();
         }
 
         private void BackwardClick(object sender, EventArgs e)
         {
-
+            if (BackStack.Count > 0)
+            {
+                PushUnique(CurrentURL, ForwardSet, ForwardStack);
+                forward.Enabled = true;
+                CurrentURL = BackStack.Pop();
+                Debug.WriteLine("<- Forward Stack -> " + String.Join(" ", ForwardStack));
+                Debug.WriteLine("<- Backward Stack -> " + String.Join(" ", BackStack));
+                Debug.WriteLine("Current URL -> " + CurrentURL);
+                LoadWebContent(CurrentURL);
+                SearchBox.Text = CurrentURL;
+            }
         }
         private void ForwardClick(object sender, EventArgs e)
         {
-
+            if (ForwardStack.Count > 0)
+            {
+                PushUnique(CurrentURL, BackSet, BackStack);
+                CurrentURL = ForwardStack.Pop();
+                Debug.WriteLine("-> Forward Stack -> " + String.Join(" ", ForwardStack));
+                Debug.WriteLine("-> Backward Stack -> " + String.Join(" ", BackStack));
+                Debug.WriteLine("Current URL -> " + CurrentURL);
+                LoadWebContent(CurrentURL);
+                SearchBox.Text = CurrentURL;
+            }
         }
 
         private void ReloadButtonClick(object sender, EventArgs e)
         {
-            if (reloadURL == null) return;
+            if (ReloadURL == null) return;
             LoadWebPage();
-            Debug.WriteLine(bookmarks.Count + " is the count");
         }
 
         private void SearchButtonClick(object sender, EventArgs e)
         {
             LoadWebPage();
-            Debug.WriteLine(bookmarks.Count + " is the count");
-            BookmarkController.LoadData(bookmarks);
+            BookmarkController.LoadData(Bookmarks);
+            CurrentURL = SearchBox.Text;
+            backward.Enabled = true;
 
         }
         private void HomeButtonClick(object sender, EventArgs e)
         {
-            LoadWebContent(homeURL);
+            LoadWebContent(HomeURL);
         }
         private void BookmarkButtonClick(object sender, EventArgs e)
         {
             bookmarkerPanel.Visible = true;
-            bookmarkURLBox.Text = searchBox.Text;
+            bookmarkURLBox.Text = SearchBox.Text;
             String pageTitle = this.Text.Split(" - ")[1]; // getting page title from the current context 
             bookmarkTitleBox.Text = pageTitle;
         }
@@ -57,17 +85,54 @@ namespace BetaSurf
             settingsDropDown.Show(settingsButton, 0, settingsButton.Height);
         }
 
+        internal void ShowLinksPanel(string RawHTML)
+        {
+            DedicatedURLLayout.Controls.Clear();
+            HtmlDocument Document = new HtmlDocument();
+            Document.LoadHtml(RawHTML);
+
+            var Links = Document.DocumentNode.SelectNodes("//a[@href]");
+
+            if (Links != null)
+            {
+                var firstFiveLinks = Links.Take(5).ToList();
+
+                foreach (var link in firstFiveLinks)
+                {
+                    string HREF = link.GetAttributeValue("href", "").Trim();
+                    string Text = link.InnerText.Trim();
+                    Debug.WriteLine(HREF + " <<<<>>>>> " + Text);
+                    if (!string.IsNullOrEmpty(HREF))
+                    {
+                        LinkLabel LinkLabel = new();
+                        LinkLabel.Text = Text;
+                        LinkLabel.AutoSize = true;
+                        LinkLabel.Cursor = Cursors.Hand;
+                        if (!HREF.StartsWith("http://") && !HREF.StartsWith("https://"))
+                        {
+                            Debug.WriteLine($" Old Href - {HREF}");
+                            HREF = SearchBox.Text + HREF;
+                            Debug.WriteLine($" NEW Href - {HREF}");
+                        }
+                        LinkLabel.Click += async (s, e) => await LoadWebContent(HREF);
+
+                        DedicatedURLLayout.Controls.Add(LinkLabel);
+                        DedicatedURLLayout.Visible = true;
+                    }
+                }
+            }
+        }
         //--------------------------------  SETTINGS -------------------------------------------
         private void OpenModifyURL(object sender, EventArgs e)
         {
-            currentURLTextBox.Text = homeURL;
+            currentURLTextBox.Text = HomeURL;
             modifyURLPanel.Visible = true;
         }
         private void ModifyURLOKButtonClick(object sender, EventArgs e)
         {
             if (modifyURLTextBox.Text.StartsWith("http://") && modifyURLTextBox.TextLength > 11)
             {
-                homeURL = modifyURLTextBox.Text;
+                HomeURL = modifyURLTextBox.Text;
                 modifyURLPanel.Visible = false;
             }
             else
@@ -92,7 +157,7 @@ namespace BetaSurf
         {
             // validate the new URL
             if (modifyURLTextBox.Text.StartsWith("http://"))
-                homeURL = modifyURLTextBox.Text;
+                HomeURL = modifyURLTextBox.Text;
             else
             {
                 e.Cancel = false;
@@ -135,17 +200,13 @@ namespace BetaSurf
         //-----------------------------  UTILITY METHOD -------------------------------
         private async Task LoadBookmarksDataFromCSV()
         {
-            using var reader = new StreamReader(Settings.Default.BOOKMARKS_FILE);
-            using var csv = new CsvHelper.CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
-            var bookmarks = csv.GetRecords<BookmarkDTO>().ToList();
-            BookmarkController.LoadData(bookmarks);
+            BookmarkController.LoadData(Utility.GetAllBookmarks());
 
         }
-
         private void AddToBookmark(String bookmarkTitle, String url)
         {
             String bookmarkURL = Utility.ValidateURL(url);
-            bookmarks.Add(new BookmarkDTO(bookmarkTitle, bookmarkURL));
+            Bookmarks.Add(new BookmarkDTO(bookmarkTitle, bookmarkURL));
             bookmarkerPanel.Visible = false;
             bookmarkAdded.Visible = true;
             String newBookmark = $"{bookmarkTitle},{bookmarkURL}"; // format to write in CSV
@@ -154,13 +215,13 @@ namespace BetaSurf
         }
         private void LoadWebPage()
         {
-            String searchText = searchBox.Text;
+            String searchText = SearchBox.Text;
             if (searchText == null) return;
             String searchURL = Utility.ValidateURL(searchText);
             LoadWebContent(searchURL);
         }
 
-        private async void LoadWebContent(String searchURL)
+        internal async Task LoadWebContent(String searchURL)
         {
             try
             {
@@ -169,13 +230,22 @@ namespace BetaSurf
                 this.Text = $"{response.StatusCode.ToString()} - {Utility.GetTitle(rawHTML)}";
                 displayCodeBox.Text = response.StatusCode.ToString(); // updating the Code Box
                 displayTextBox.Text = rawHTML;  // updating the main content page 
-                reloadURL = searchURL;
+                ReloadURL = searchURL;
+                forward.Enabled = ForwardStack.Count > 0;
+                backward.Enabled = BackStack.Count > 0;
+                ShowLinksPanel(rawHTML);
             }
             catch (Exception exception)
             {
                 Debug.WriteLine("Exception : " + exception);
             }
 
+        }
+
+        private void PushUnique(String value, HashSet<String> Set, Stack<String> Stack)
+        {
+            if (Set.Add(value))
+                Stack.Push(value);
         }
         //-----------------------------  UTILITY METHOD -------------------------------
 

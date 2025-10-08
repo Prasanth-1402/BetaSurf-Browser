@@ -40,8 +40,8 @@ namespace BetaSurf
             resources.ApplyResources(BmTableControl, "BmTableControl");
             BmTableControl.Name = "BmTableControl";
             BmTableControl.CellContentClick += BmTableControl_CellContentClick;
-            BmTableControl.Click += BmTableControl_CellContentClick;
             BmTableControl.CellValueChanged += BmTableControl_CellValueChanged;
+            BmTableControl.CellBeginEdit += BmTableControl_CellBeginEdit;
             // 
             // BmTitle
             // 
@@ -74,6 +74,7 @@ namespace BetaSurf
             ((System.ComponentModel.ISupportInitialize)BmTableControl).EndInit();
             ResumeLayout(false);
         }
+
 
         #endregion
 

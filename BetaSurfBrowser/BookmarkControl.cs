@@ -1,9 +1,14 @@
-﻿using System.Diagnostics;
+﻿using CsvHelper;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace BetaSurf
 {
     public partial class BookmarkControl : UserControl
     {
+        private String _previousValue;
+
         public BookmarkControl()
         {
             InitializeComponent();
@@ -12,15 +17,6 @@ namespace BetaSurf
         public void LoadData(List<BookmarkDTO> bookmarks)
         {
             BmTableControl.DataSource = bookmarks;
-        }
-
-        public void getTableData()
-        {
-            Debug.WriteLine(BmTableControl.RowCount);
-        }
-        private void BmTableControl_CellContentClick(object sender, EventArgs e)
-        {
-
         }
 
         private void BmTableControl_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -34,33 +30,53 @@ namespace BetaSurf
             var Row = BmTableControl.Rows[e.RowIndex];
             var Title = Row.Cells["Title"].Value?.ToString();
 
-            switch (BmTableControl.Columns[e.ColumnIndex].Name)
+            if (BmTableControl.Columns[e.ColumnIndex].Name == "BmDelete")
             {
-                case "BmDelete":
-                    var IsDelete = MessageBox.Show($"Are you sure want to delete the bookmark '{Title}'? ",
-                        "Warning",
-                        MessageBoxButtons.OKCancel,
-                        MessageBoxIcon.Warning);
-
-                    //Deleting only after successful confirmation
-                    if (IsDelete == DialogResult.OK)
-                        DeleteBookmark(Title); 
-                    break;
+                var IsDelete = MessageBox.Show($"Are you sure want to delete the bookmark '{Title}'? ",
+                    "Warning",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning);
+                //Deleting only after successful confirmation
+                if (IsDelete == DialogResult.OK)   
+                    DeleteBookmark(Row); 
             }
         }
-        //TODO - Write Delete Logic
-        private void DeleteBookmark(String Title) { }
+        private void DeleteBookmark(DataGridViewRow Row)
+        {
+            List<BookmarkDTO> allBookmarks = Utility.GetAllBookmarks();
+            
+            var RowToDelete = allBookmarks.FirstOrDefault(bookmark => bookmark.URL.Equals(Row.Cells["URL"].Value));
+            if (RowToDelete != null)
+            {
+                allBookmarks.Remove(RowToDelete); // removing from the list
+                BmTableControl.DataSource = allBookmarks;  // removing from the UI
+                Utility.WriteToBookmarks(allBookmarks); // writing the updated list to CSV
+            }
+        }
 
+        private void BmTableControl_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            _previousValue = BmTableControl.Rows[e.RowIndex]?.Cells[e.ColumnIndex]?.Value + "";
+        }
 
         private void BmTableControl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
+            var cell = BmTableControl.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            var value = cell.Value?.ToString()?.Trim();
 
-            var Row = BmTableControl.Rows[e.RowIndex];
-            var Column = BmTableControl.Columns[e.ColumnIndex].Name;
-            var NewValue = Row.Cells[e.ColumnIndex].Value;
-            //TODO - Update the exact column/row value in the CSV file
+            if (string.IsNullOrEmpty(value))
+            {
+                MessageBox.Show("This field cannot be left empty.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cell.Value = _previousValue;
+
+            }
+            else
+            {
+                var BookmarksList = (List<BookmarkDTO>)BmTableControl.DataSource;
+                Utility.WriteToBookmarks(BookmarksList);
+            }
         }
     }
 }
