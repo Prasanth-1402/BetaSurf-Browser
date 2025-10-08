@@ -8,7 +8,7 @@ namespace BetaSurf
     public partial class BookmarkControl : UserControl
     {
         private String _previousValue = "";
-
+        public event Action<string> BookmarkSelected;
         public BookmarkControl()
         {
             InitializeComponent();
@@ -29,7 +29,7 @@ namespace BetaSurf
 
             var Row = BmTableControl.Rows[e.RowIndex];
             var Title = Row.Cells["Title"].Value?.ToString();
-
+            var URL = Row.Cells["URL"].Value?.ToString();
             if (BmTableControl.Columns[e.ColumnIndex].Name == "BmDelete")
             {
                 var IsDelete = MessageBox.Show($"Are you sure want to delete the bookmark '{Title}'? ",
@@ -41,6 +41,18 @@ namespace BetaSurf
                     DeleteBookmark(Row); 
             }
         }
+        private void BmTableControl_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            var Row = BmTableControl.Rows[e.RowIndex];
+            var Title = Row.Cells["Title"].Value?.ToString();
+            var URL = Row.Cells["URL"].Value?.ToString();
+            if (BmTableControl.Columns[e.ColumnIndex].Name == "Title")
+            {
+                BmTableControl.Visible = false;
+                BookmarkSelected?.Invoke(URL);
+            }
+        }
+
         private void DeleteBookmark(DataGridViewRow Row)
         {
             List<BookmarkDTO> allBookmarks = Utility.GetAllBookmarks();

@@ -25,10 +25,6 @@ namespace BetaSurf
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
@@ -45,7 +41,6 @@ namespace BetaSurf
             settingsDropDown = new ContextMenuStrip(components);
             modifyURLOptionInSettings = new ToolStripMenuItem();
             bookmarksToolStripMenuItem = new ToolStripMenuItem();
-            refreshPageToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             modifyURLPanel = new Panel();
             ModifyHomeURLLabel = new Label();
@@ -74,6 +69,7 @@ namespace BetaSurf
             modifyURLPanel.SuspendLayout();
             bookmarkerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)newURLError).BeginInit();
+            bookmarksTableContainer.SuspendLayout();
             SuspendLayout();
             // 
             // backward
@@ -145,7 +141,7 @@ namespace BetaSurf
             // 
             displayTextBox.Location = new Point(24, 103);
             displayTextBox.Name = "displayTextBox";
-            displayTextBox.Size = new Size(735, 356);
+            displayTextBox.Size = new Size(942, 356);
             displayTextBox.TabIndex = 6;
             displayTextBox.Text = "";
             // 
@@ -187,9 +183,9 @@ namespace BetaSurf
             // 
             settingsDropDown.AllowDrop = true;
             settingsDropDown.AllowMerge = false;
-            settingsDropDown.Items.AddRange(new ToolStripItem[] { modifyURLOptionInSettings, bookmarksToolStripMenuItem, refreshPageToolStripMenuItem, exitToolStripMenuItem });
+            settingsDropDown.Items.AddRange(new ToolStripItem[] { modifyURLOptionInSettings, bookmarksToolStripMenuItem, exitToolStripMenuItem });
             settingsDropDown.Name = "settingsDropDown";
-            settingsDropDown.Size = new Size(173, 92);
+            settingsDropDown.Size = new Size(173, 70);
             // 
             // modifyURLOptionInSettings
             // 
@@ -205,12 +201,6 @@ namespace BetaSurf
             bookmarksToolStripMenuItem.Text = "Bookmarks";
             bookmarksToolStripMenuItem.Click += OpenBookmarkFromSettingsClick;
             // 
-            // refreshPageToolStripMenuItem
-            // 
-            refreshPageToolStripMenuItem.Name = "refreshPageToolStripMenuItem";
-            refreshPageToolStripMenuItem.Size = new Size(172, 22);
-            refreshPageToolStripMenuItem.Text = "Refresh Page";
-            // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -219,6 +209,7 @@ namespace BetaSurf
             // 
             // modifyURLPanel
             // 
+            modifyURLPanel.BackColor = Color.MistyRose;
             modifyURLPanel.Controls.Add(ModifyHomeURLLabel);
             modifyURLPanel.Controls.Add(modifyURLPanelCloser);
             modifyURLPanel.Controls.Add(currentURLTextBox);
@@ -227,9 +218,9 @@ namespace BetaSurf
             modifyURLPanel.Controls.Add(modifyURLOKButton);
             modifyURLPanel.Controls.Add(modifyURLCancelButton);
             modifyURLPanel.Controls.Add(modifyURLTextBox);
-            modifyURLPanel.Location = new Point(375, 177);
+            modifyURLPanel.Location = new Point(205, 159);
             modifyURLPanel.Name = "modifyURLPanel";
-            modifyURLPanel.Size = new Size(327, 150);
+            modifyURLPanel.Size = new Size(472, 185);
             modifyURLPanel.TabIndex = 12;
             modifyURLPanel.Visible = false;
             // 
@@ -237,7 +228,7 @@ namespace BetaSurf
             // 
             ModifyHomeURLLabel.AutoSize = true;
             ModifyHomeURLLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            ModifyHomeURLLabel.Location = new Point(92, 5);
+            ModifyHomeURLLabel.Location = new Point(147, 15);
             ModifyHomeURLLabel.Name = "ModifyHomeURLLabel";
             ModifyHomeURLLabel.Size = new Size(149, 21);
             ModifyHomeURLLabel.TabIndex = 12;
@@ -245,17 +236,21 @@ namespace BetaSurf
             // 
             // modifyURLPanelCloser
             // 
-            modifyURLPanelCloser.Location = new Point(301, 3);
+            modifyURLPanelCloser.BackColor = Color.White;
+            modifyURLPanelCloser.FlatStyle = FlatStyle.Popup;
+            modifyURLPanelCloser.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+            modifyURLPanelCloser.ForeColor = Color.Red;
+            modifyURLPanelCloser.Location = new Point(445, 3);
             modifyURLPanelCloser.Name = "modifyURLPanelCloser";
             modifyURLPanelCloser.Size = new Size(24, 23);
             modifyURLPanelCloser.TabIndex = 7;
             modifyURLPanelCloser.Text = "X";
-            modifyURLPanelCloser.UseVisualStyleBackColor = true;
+            modifyURLPanelCloser.UseVisualStyleBackColor = false;
             modifyURLPanelCloser.Click += CloseModifyURLPanel;
             // 
             // currentURLTextBox
             // 
-            currentURLTextBox.Location = new Point(92, 42);
+            currentURLTextBox.Location = new Point(147, 61);
             currentURLTextBox.Name = "currentURLTextBox";
             currentURLTextBox.ReadOnly = true;
             currentURLTextBox.Size = new Size(212, 23);
@@ -264,7 +259,7 @@ namespace BetaSurf
             // currentURL
             // 
             currentURL.AutoSize = true;
-            currentURL.Location = new Point(13, 42);
+            currentURL.Location = new Point(47, 64);
             currentURL.Name = "currentURL";
             currentURL.Size = new Size(80, 15);
             currentURL.TabIndex = 5;
@@ -273,7 +268,7 @@ namespace BetaSurf
             // modifyURLLabel
             // 
             modifyURLLabel.AutoSize = true;
-            modifyURLLabel.Location = new Point(13, 76);
+            modifyURLLabel.Location = new Point(63, 110);
             modifyURLLabel.Name = "modifyURLLabel";
             modifyURLLabel.Size = new Size(64, 15);
             modifyURLLabel.TabIndex = 3;
@@ -283,9 +278,9 @@ namespace BetaSurf
             // 
             modifyURLOKButton.BackColor = SystemColors.HotTrack;
             modifyURLOKButton.ForeColor = SystemColors.ButtonFace;
-            modifyURLOKButton.Location = new Point(222, 121);
+            modifyURLOKButton.Location = new Point(295, 139);
             modifyURLOKButton.Name = "modifyURLOKButton";
-            modifyURLOKButton.Size = new Size(75, 23);
+            modifyURLOKButton.Size = new Size(83, 32);
             modifyURLOKButton.TabIndex = 2;
             modifyURLOKButton.Text = "OK";
             modifyURLOKButton.UseVisualStyleBackColor = false;
@@ -293,9 +288,9 @@ namespace BetaSurf
             // 
             // modifyURLCancelButton
             // 
-            modifyURLCancelButton.Location = new Point(92, 121);
+            modifyURLCancelButton.Location = new Point(109, 139);
             modifyURLCancelButton.Name = "modifyURLCancelButton";
-            modifyURLCancelButton.Size = new Size(75, 23);
+            modifyURLCancelButton.Size = new Size(83, 32);
             modifyURLCancelButton.TabIndex = 1;
             modifyURLCancelButton.Text = "Cancel";
             modifyURLCancelButton.UseVisualStyleBackColor = true;
@@ -304,7 +299,7 @@ namespace BetaSurf
             // modifyURLTextBox
             // 
             modifyURLTextBox.AcceptsReturn = true;
-            modifyURLTextBox.Location = new Point(92, 76);
+            modifyURLTextBox.Location = new Point(147, 102);
             modifyURLTextBox.Name = "modifyURLTextBox";
             modifyURLTextBox.PlaceholderText = "New URL";
             modifyURLTextBox.Size = new Size(212, 23);
@@ -323,7 +318,7 @@ namespace BetaSurf
             bookmarkerPanel.Controls.Add(bookmarkTitleLabel);
             bookmarkerPanel.Controls.Add(addToBookmarkLabel);
             newURLError.SetIconAlignment(bookmarkerPanel, ErrorIconAlignment.MiddleLeft);
-            bookmarkerPanel.Location = new Point(375, 160);
+            bookmarkerPanel.Location = new Point(268, 71);
             bookmarkerPanel.Name = "bookmarkerPanel";
             bookmarkerPanel.Size = new Size(350, 185);
             bookmarkerPanel.TabIndex = 12;
@@ -340,7 +335,7 @@ namespace BetaSurf
             // 
             bookmarkTitleBox.Location = new Point(106, 50);
             bookmarkTitleBox.Name = "bookmarkTitleBox";
-            bookmarkTitleBox.Size = new Size(149, 23);
+            bookmarkTitleBox.Size = new Size(182, 23);
             bookmarkTitleBox.TabIndex = 5;
             // 
             // addBookmark
@@ -366,7 +361,7 @@ namespace BetaSurf
             // bookmarkURLLabel
             // 
             bookmarkURLLabel.AutoSize = true;
-            bookmarkURLLabel.Location = new Point(24, 91);
+            bookmarkURLLabel.Location = new Point(48, 91);
             bookmarkURLLabel.Name = "bookmarkURLLabel";
             bookmarkURLLabel.Size = new Size(28, 15);
             bookmarkURLLabel.TabIndex = 2;
@@ -375,7 +370,7 @@ namespace BetaSurf
             // bookmarkTitleLabel
             // 
             bookmarkTitleLabel.AutoSize = true;
-            bookmarkTitleLabel.Location = new Point(22, 50);
+            bookmarkTitleLabel.Location = new Point(48, 50);
             bookmarkTitleLabel.Name = "bookmarkTitleLabel";
             bookmarkTitleLabel.Size = new Size(30, 15);
             bookmarkTitleLabel.TabIndex = 1;
@@ -385,7 +380,7 @@ namespace BetaSurf
             // 
             addToBookmarkLabel.AutoSize = true;
             addToBookmarkLabel.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            addToBookmarkLabel.Location = new Point(115, 19);
+            addToBookmarkLabel.Location = new Point(102, 17);
             addToBookmarkLabel.Name = "addToBookmarkLabel";
             addToBookmarkLabel.Size = new Size(140, 20);
             addToBookmarkLabel.TabIndex = 0;
@@ -426,24 +421,24 @@ namespace BetaSurf
             // 
             // bookmarksTableContainer
             // 
-            bookmarksTableContainer.Dock = DockStyle.Bottom;
+            bookmarksTableContainer.Controls.Add(bookmarkerPanel);
             bookmarksTableContainer.Location = new Point(0, 74);
             bookmarksTableContainer.Name = "bookmarksTableContainer";
             bookmarksTableContainer.Size = new Size(966, 397);
-            bookmarksTableContainer.TabIndex = 13;
+            bookmarksTableContainer.TabIndex = 6;
             bookmarksTableContainer.Visible = false;
             // 
             // DedicatedURLLayout
             // 
-            DedicatedURLLayout.BackColor = Color.Bisque;
+            DedicatedURLLayout.BackColor = SystemColors.GradientActiveCaption;
+            DedicatedURLLayout.BackgroundImageLayout = ImageLayout.None;
             DedicatedURLLayout.BorderStyle = BorderStyle.Fixed3D;
             DedicatedURLLayout.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, GraphicsUnit.Point, 0);
-            DedicatedURLLayout.Location = new Point(765, 103);
+            DedicatedURLLayout.Location = new Point(759, 116);
             DedicatedURLLayout.Name = "DedicatedURLLayout";
-            DedicatedURLLayout.Padding = new Padding(5);
             DedicatedURLLayout.Size = new Size(198, 122);
-            DedicatedURLLayout.TabIndex = 0;
-            DedicatedURLLayout.Visible = false;
+            DedicatedURLLayout.TabIndex = 6;
+            DedicatedURLLayout.TabStop = true;
             // 
             // Home
             // 
@@ -451,11 +446,10 @@ namespace BetaSurf
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(966, 471);
+            Controls.Add(modifyURLPanel);
             Controls.Add(DedicatedURLLayout);
             Controls.Add(bookmarksTableContainer);
-            Controls.Add(bookmarkerPanel);
             Controls.Add(bookmarkButton);
-            Controls.Add(modifyURLPanel);
             Controls.Add(settingsButton);
             Controls.Add(homeButton);
             Controls.Add(displayCodeBox);
@@ -474,6 +468,7 @@ namespace BetaSurf
             bookmarkerPanel.ResumeLayout(false);
             bookmarkerPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)newURLError).EndInit();
+            bookmarksTableContainer.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
             // -----------------------------BetaSurf-----------------------------
@@ -493,7 +488,6 @@ namespace BetaSurf
         private Button settingsButton;
         private ContextMenuStrip settingsDropDown;
         private ToolStripMenuItem modifyURLOptionInSettings;
-        private ToolStripMenuItem refreshPageToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
         private Panel modifyURLPanel;
         private Label modifyURLLabel;

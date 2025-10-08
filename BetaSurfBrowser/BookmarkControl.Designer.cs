@@ -42,6 +42,7 @@ namespace BetaSurf
             BmTableControl.CellContentClick += BmTableControl_CellContentClick;
             BmTableControl.CellValueChanged += BmTableControl_CellValueChanged;
             BmTableControl.CellBeginEdit += BmTableControl_CellBeginEdit;
+            BmTableControl.CellMouseClick += BmTableControl_CellMouseClick;
             // 
             // BmTitle
             // 

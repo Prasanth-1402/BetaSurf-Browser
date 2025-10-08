@@ -9,10 +9,13 @@ namespace BetaSurf
     {
         private String? ReloadURL;
         private static String HomeURL = "http://hw.ac.uk";
+        private String CurrentURL = HomeURL;
+        private Boolean IsNavFromHistory = false;
+        private int CurrentIndex = -1;
+
         private BookmarkControl BookmarkController;
         public List<BookmarkDTO> Bookmarks;
-
-        private String CurrentURL = HomeURL;
+        private List<String> History;
         public Home()
         {
             InitializeComponent();
@@ -20,16 +23,69 @@ namespace BetaSurf
             LoadWebContent(HomeURL);
             BookmarkController = new();
             Bookmarks = new(10);
+            History = new();
             this.Load += async (s, e) => await LoadBookmarksDataFromCSV();
+            BookmarkController.BookmarkSelected += url => GoToURLFromBookMarksTable(url);
+        }
+
+        private void GoToURLFromBookMarksTable(String url)
+        {
+            IsNavFromHistory = true;
+            GoToPage(url);
+            IsNavFromHistory = false;
+            BookmarkController.Hide();
+            bookmarksTableContainer.Hide();
         }
 
         private void BackwardClick(object sender, EventArgs e)
         {
+            Debug.WriteLine("History from backward -> " + String.Join(" ", History));
+            Debug.WriteLine(CurrentIndex);
 
+            if (CurrentIndex > 0)
+            {
+                IsNavFromHistory = true;
+                CurrentIndex--;
+                GoToPage(History[CurrentIndex]);
+                IsNavFromHistory = false;
+                forward.Enabled = true;
+            }
         }
+
+        private void GoToPage(String GoToPageURL)
+        {
+            var URL = Utility.ValidateURL(GoToPageURL);
+            Debug.WriteLine(" Going to ... "+URL + " "+IsNavFromHistory);
+            if (!IsNavFromHistory)
+            {
+                if(CurrentIndex < History.Count - 1)
+                    History.RemoveRange(CurrentIndex+1, History.Count - CurrentIndex - 1);
+                if(History.Count == 0 || History.Last() != URL)
+                    History.Add(URL);
+
+                CurrentIndex = History.Count - 1;
+
+                Debug.WriteLine("History -> "+ String.Join(" ",History));
+                Debug.WriteLine(CurrentIndex);
+            }
+            SearchBox.Text = URL;
+            LoadWebPage();
+            backward.Enabled = CurrentIndex > 0;
+            forward.Enabled = CurrentIndex < History.Count - 1;
+        }
+
         private void ForwardClick(object sender, EventArgs e)
         {
-
+            if (CurrentIndex < History.Count - 1)
+            { 
+                IsNavFromHistory = true;
+                CurrentIndex++;
+                Debug.WriteLine("History from forward -> " + String.Join(" ", History));
+                Debug.WriteLine(CurrentIndex);
+                GoToPage(History[CurrentIndex]);
+                IsNavFromHistory = false;
+                backward.Enabled = History.Count > 0;
+            }
         }
 
         private void ReloadButtonClick(object sender, EventArgs e)
@@ -40,9 +96,11 @@ namespace BetaSurf
 
         private void SearchButtonClick(object sender, EventArgs e)
         {
+            IsNavFromHistory = false;
+            CurrentURL = SearchBox.Text;
+            GoToPage(CurrentURL);
             LoadWebPage();
             BookmarkController.LoadData(Bookmarks);
-            CurrentURL = SearchBox.Text;
             backward.Enabled = true;
 
         }
@@ -149,6 +207,8 @@ namespace BetaSurf
             bookmarksTableContainer.Controls.Add(BookmarkController);
             BookmarkController.Show();
             bookmarksTableContainer.Show();
+            bookmarksTableContainer.BringToFront();
+            BookmarkController.BringToFront();
         }
         //--------------------------------  SETTINGS -------------------------------------------
 
