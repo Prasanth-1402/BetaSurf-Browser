@@ -77,7 +77,7 @@ namespace BetaSurf
         private void ForwardClick(object sender, EventArgs e)
         {
             if (CurrentIndex < History.Count - 1)
-            { 
+            {
                 IsNavFromHistory = true;
                 CurrentIndex++;
                 Debug.WriteLine("History from forward -> " + String.Join(" ", History));
@@ -107,6 +107,7 @@ namespace BetaSurf
         private void HomeButtonClick(object sender, EventArgs e)
         {
             LoadWebContent(HomeURL);
+            SearchBox.Text = HomeURL;
         }
         private void BookmarkButtonClick(object sender, EventArgs e)
         {
@@ -159,6 +160,7 @@ namespace BetaSurf
         {
             currentURLTextBox.Text = HomeURL;
             modifyURLPanel.Visible = true;
+            modifyURLPanel.BringToFront();
         }
         private void ModifyURLOKButtonClick(object sender, EventArgs e)
         {
@@ -257,6 +259,10 @@ namespace BetaSurf
 
         internal async Task LoadWebContent(String searchURL)
         {
+            LoadingLabel.Visible = true;
+            displayTextBox.Visible = false;
+            displayCodeBox.Visible = false;
+            DedicatedURLLayout.Visible = false;
             try
             {
                 HttpResponseMessage response = await new HttpClient().GetAsync(searchURL);
@@ -272,7 +278,19 @@ namespace BetaSurf
             {
                 Debug.WriteLine("Exception : " + exception);
             }
+            finally
+            {
+                LoadingLabel.Visible = false;
+                displayTextBox.Visible = true;
+                displayCodeBox.Visible = true;
+                DedicatedURLLayout.Visible = true;
+            }
 
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
         //-----------------------------  UTILITY METHOD -------------------------------
 

@@ -65,6 +65,7 @@ namespace BetaSurf
             bookmarkAdded = new NotifyIcon(components);
             bookmarksTableContainer = new Panel();
             DedicatedURLLayout = new FlowLayoutPanel();
+            LoadingLabel = new Label();
             settingsDropDown.SuspendLayout();
             modifyURLPanel.SuspendLayout();
             bookmarkerPanel.SuspendLayout();
@@ -140,8 +141,9 @@ namespace BetaSurf
             // displayTextBox
             // 
             displayTextBox.Location = new Point(24, 103);
+            displayTextBox.Margin = new Padding(3, 50, 10, 3);
             displayTextBox.Name = "displayTextBox";
-            displayTextBox.Size = new Size(942, 356);
+            displayTextBox.Size = new Size(730, 356);
             displayTextBox.TabIndex = 6;
             displayTextBox.Text = "";
             // 
@@ -206,6 +208,7 @@ namespace BetaSurf
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             exitToolStripMenuItem.Size = new Size(172, 22);
             exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // modifyURLPanel
             // 
@@ -421,10 +424,12 @@ namespace BetaSurf
             // 
             // bookmarksTableContainer
             // 
+            bookmarksTableContainer.AutoSize = true;
             bookmarksTableContainer.Controls.Add(bookmarkerPanel);
             bookmarksTableContainer.Location = new Point(0, 74);
             bookmarksTableContainer.Name = "bookmarksTableContainer";
-            bookmarksTableContainer.Size = new Size(966, 397);
+            bookmarksTableContainer.Padding = new Padding(15);
+            bookmarksTableContainer.Size = new Size(966, 357);
             bookmarksTableContainer.TabIndex = 6;
             bookmarksTableContainer.Visible = false;
             // 
@@ -436,9 +441,22 @@ namespace BetaSurf
             DedicatedURLLayout.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, GraphicsUnit.Point, 0);
             DedicatedURLLayout.Location = new Point(759, 116);
             DedicatedURLLayout.Name = "DedicatedURLLayout";
+            DedicatedURLLayout.Padding = new Padding(10);
             DedicatedURLLayout.Size = new Size(198, 122);
             DedicatedURLLayout.TabIndex = 6;
             DedicatedURLLayout.TabStop = true;
+            // 
+            // LoadingLabel
+            // 
+            LoadingLabel.AutoSize = true;
+            LoadingLabel.Location = new Point(362, 435);
+            LoadingLabel.Name = "LoadingLabel";
+            LoadingLabel.Size = new Size(59, 15);
+            LoadingLabel.TabIndex = 13;
+            LoadingLabel.Text = "Loading...";
+            LoadingLabel.Visible = false;
+            LoadingLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            LoadingLabel.BackColor = Color.Yellow;
             // 
             // Home
             // 
@@ -446,6 +464,7 @@ namespace BetaSurf
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(966, 471);
+            Controls.Add(LoadingLabel);
             Controls.Add(modifyURLPanel);
             Controls.Add(DedicatedURLLayout);
             Controls.Add(bookmarksTableContainer);
@@ -513,5 +532,6 @@ namespace BetaSurf
         private ToolStripMenuItem bookmarksToolStripMenuItem;
         private Panel bookmarksTableContainer;
         private FlowLayoutPanel DedicatedURLLayout;
+        private Label LoadingLabel;
     }
 }

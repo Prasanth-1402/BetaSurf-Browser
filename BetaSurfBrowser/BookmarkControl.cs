@@ -48,7 +48,6 @@ namespace BetaSurf
             var URL = Row.Cells["URL"].Value?.ToString();
             if (BmTableControl.Columns[e.ColumnIndex].Name == "Title")
             {
-                BmTableControl.Visible = false;
                 BookmarkSelected?.Invoke(URL);
             }
         }
