@@ -429,7 +429,7 @@ namespace BetaSurf
             bookmarksTableContainer.Location = new Point(0, 74);
             bookmarksTableContainer.Name = "bookmarksTableContainer";
             bookmarksTableContainer.Padding = new Padding(15);
-            bookmarksTableContainer.Size = new Size(966, 357);
+            bookmarksTableContainer.Size = new Size(966, 385);
             bookmarksTableContainer.TabIndex = 6;
             bookmarksTableContainer.Visible = false;
             // 
@@ -449,14 +449,14 @@ namespace BetaSurf
             // LoadingLabel
             // 
             LoadingLabel.AutoSize = true;
+            LoadingLabel.BackColor = Color.Yellow;
+            LoadingLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             LoadingLabel.Location = new Point(362, 435);
             LoadingLabel.Name = "LoadingLabel";
-            LoadingLabel.Size = new Size(59, 15);
+            LoadingLabel.Size = new Size(84, 21);
             LoadingLabel.TabIndex = 13;
             LoadingLabel.Text = "Loading...";
             LoadingLabel.Visible = false;
-            LoadingLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            LoadingLabel.BackColor = Color.Yellow;
             // 
             // Home
             // 

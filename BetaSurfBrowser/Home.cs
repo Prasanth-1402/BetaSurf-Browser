@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using BetaSurf.Properties;
-using HtmlAgilityPack;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace BetaSurf
