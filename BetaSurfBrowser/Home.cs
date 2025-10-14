@@ -1,5 +1,8 @@
-using System.Diagnostics;
+using AngleSharp.Io;
 using BetaSurf.Properties;
+using System;
+using System.Diagnostics;
+using System.Net;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace BetaSurf
@@ -60,7 +63,7 @@ namespace BetaSurf
                 if(CurrentIndex < History.Count - 1)
                     History.RemoveRange(CurrentIndex+1, History.Count - CurrentIndex - 1);
                 if(History.Count == 0 || History.Last() != URL)
-                    History.Add(URL);
+                    History.Insert(0,URL);
 
                 CurrentIndex = History.Count - 1;
 
@@ -86,7 +89,19 @@ namespace BetaSurf
                 backward.Enabled = History.Count > 0;
             }
         }
+        private void ShowHistoryDropDown(object sender, EventArgs e) {
+            historyDropdown.Items.Clear();
+            Debug.WriteLine("Show history drop down clicked " + String.Join(" ", History));
 
+            foreach(var historyValues in History)
+                if (historyDropdown.Items.IndexOfKey(historyValues) <= 0)
+                {
+                    ToolStripMenuItem historyMenuItem = new(historyValues);
+                    historyDropdown.Items.Add(historyMenuItem);
+                }
+            
+            historyDropdown.Show(showHistory, 0, showHistory.Height);
+        }
         private void ReloadButtonClick(object sender, EventArgs e)
         {
             if (ReloadURL == null) return;
@@ -262,20 +277,30 @@ namespace BetaSurf
             displayTextBox.Visible = false;
             displayCodeBox.Visible = false;
             DedicatedURLLayout.Visible = false;
+            HttpResponseMessage response = await new HttpClient().GetAsync(searchURL);
             try
             {
-                HttpResponseMessage response = await new HttpClient().GetAsync(searchURL);
                 String rawHTML = await response.Content.ReadAsStringAsync();
                 this.Text = $"{response.StatusCode.ToString()} - {Utility.GetTitle(rawHTML)}";
-                displayCodeBox.Text = response.StatusCode.ToString(); // updating the Code Box
+                displayCodeBox.Text = response.StatusCode.ToString();
                 displayTextBox.Text = rawHTML;  // updating the main content page 
                 ReloadURL = searchURL;
 
                 ShowLinksPanel(rawHTML);
             }
+            catch (HttpRequestException httpException)
+            {
+                if (httpException.StatusCode == HttpStatusCode.Forbidden |
+                    httpException.StatusCode == HttpStatusCode.BadRequest |
+                    httpException.StatusCode == HttpStatusCode.NotFound)
+                
+                        displayTextBox.Text = response.RequestMessage.ToString();
+                 displayCodeBox.Text = response.StatusCode.ToString();
+                
+            }
             catch (Exception exception)
             {
-                Debug.WriteLine("Exception : " + exception);
+                Debug.WriteLine("Not a HTTP Exception : " + exception);
             }
             finally
             {

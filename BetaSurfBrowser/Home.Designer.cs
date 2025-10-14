@@ -66,11 +66,15 @@ namespace BetaSurf
             bookmarksTableContainer = new Panel();
             DedicatedURLLayout = new FlowLayoutPanel();
             LoadingLabel = new Label();
+            showHistory = new Button();
+            historyDropdown = new ContextMenuStrip(components);
+            dummyToolStripMenuItem = new ToolStripMenuItem();
             settingsDropDown.SuspendLayout();
             modifyURLPanel.SuspendLayout();
             bookmarkerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)newURLError).BeginInit();
             bookmarksTableContainer.SuspendLayout();
+            historyDropdown.SuspendLayout();
             SuspendLayout();
             // 
             // backward
@@ -78,10 +82,10 @@ namespace BetaSurf
             backward.Cursor = Cursors.Hand;
             backward.Enabled = false;
             backward.Font = new Font("Arial", 12.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            backward.Location = new Point(17, 28);
+            backward.Location = new Point(9, 27);
             backward.Margin = new Padding(0);
             backward.Name = "backward";
-            backward.Size = new Size(39, 37);
+            backward.Size = new Size(41, 39);
             backward.TabIndex = 0;
             backward.Text = "←";
             backward.UseVisualStyleBackColor = true;
@@ -91,7 +95,7 @@ namespace BetaSurf
             // 
             forward.Enabled = false;
             forward.Font = new Font("Arial", 13F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            forward.Location = new Point(56, 26);
+            forward.Location = new Point(48, 27);
             forward.Margin = new Padding(0);
             forward.Name = "forward";
             forward.Size = new Size(41, 39);
@@ -117,10 +121,10 @@ namespace BetaSurf
             // 
             search.FlatAppearance.BorderSize = 3;
             search.Font = new Font("Arial", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            search.Location = new Point(816, 26);
+            search.Location = new Point(797, 31);
             search.Margin = new Padding(0);
             search.Name = "search";
-            search.Size = new Size(41, 39);
+            search.Size = new Size(40, 33);
             search.TabIndex = 4;
             search.Text = "🔍";
             search.UseVisualStyleBackColor = true;
@@ -129,10 +133,10 @@ namespace BetaSurf
             // reload
             // 
             reload.Font = new Font("Arial", 13F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            reload.Location = new Point(145, 22);
+            reload.Location = new Point(162, 31);
             reload.Margin = new Padding(0);
             reload.Name = "reload";
-            reload.Size = new Size(57, 47);
+            reload.Size = new Size(40, 33);
             reload.TabIndex = 5;
             reload.Text = "⟳";
             reload.UseVisualStyleBackColor = true;
@@ -157,10 +161,10 @@ namespace BetaSurf
             // homeButton
             // 
             homeButton.Font = new Font("Arial", 13F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            homeButton.Location = new Point(97, 22);
+            homeButton.Location = new Point(121, 31);
             homeButton.Margin = new Padding(0);
             homeButton.Name = "homeButton";
-            homeButton.Size = new Size(48, 47);
+            homeButton.Size = new Size(40, 33);
             homeButton.TabIndex = 8;
             homeButton.Text = "";
             homeButton.UseVisualStyleBackColor = true;
@@ -395,9 +399,9 @@ namespace BetaSurf
             // 
             // bookmarkButton
             // 
-            bookmarkButton.Location = new Point(850, 26);
+            bookmarkButton.Location = new Point(850, 31);
             bookmarkButton.Name = "bookmarkButton";
-            bookmarkButton.Size = new Size(41, 39);
+            bookmarkButton.Size = new Size(40, 33);
             bookmarkButton.TabIndex = 11;
             bookmarkButton.Text = "🔖";
             bookmarkButton.UseVisualStyleBackColor = true;
@@ -458,12 +462,31 @@ namespace BetaSurf
             LoadingLabel.Text = "Loading...";
             LoadingLabel.Visible = false;
             // 
+            // showHistory
+            // 
+            showHistory.ContextMenuStrip = historyDropdown;
+            showHistory.Location = new Point(84, 27);
+            showHistory.Name = "showHistory";
+            showHistory.Size = new Size(22, 39);
+            showHistory.TabIndex = 14;
+            showHistory.Text = "▼";
+            showHistory.UseVisualStyleBackColor = true;
+            showHistory.Click += ShowHistoryDropDown;
+            // 
+            // historyDropdown
+            // 
+            historyDropdown.AllowDrop = true;
+            historyDropdown.AllowMerge = false;
+            historyDropdown.Name = "historyDropdown";
+            historyDropdown.Size = new Size(117, 26);
+            // 
             // Home
             // 
             AcceptButton = search;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(966, 471);
+            Controls.Add(showHistory);
             Controls.Add(LoadingLabel);
             Controls.Add(modifyURLPanel);
             Controls.Add(DedicatedURLLayout);
@@ -488,6 +511,7 @@ namespace BetaSurf
             bookmarkerPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)newURLError).EndInit();
             bookmarksTableContainer.ResumeLayout(false);
+            historyDropdown.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
             // -----------------------------BetaSurf-----------------------------
@@ -533,5 +557,8 @@ namespace BetaSurf
         private Panel bookmarksTableContainer;
         private FlowLayoutPanel DedicatedURLLayout;
         private Label LoadingLabel;
+        private Button showHistory;
+        private ContextMenuStrip historyDropdown;
+        private ToolStripMenuItem dummyToolStripMenuItem;
     }
 }
