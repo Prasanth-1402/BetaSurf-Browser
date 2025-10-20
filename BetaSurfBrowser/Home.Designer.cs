@@ -65,7 +65,7 @@ namespace BetaSurf
             bookmarkAdded = new NotifyIcon(components);
             bookmarksTableContainer = new Panel();
             DedicatedURLLayout = new FlowLayoutPanel();
-            LoadingLabel = new Label();
+            loadingLabel = new Label();
             showHistory = new Button();
             historyDropdown = new ContextMenuStrip(components);
             dummyToolStripMenuItem = new ToolStripMenuItem();
@@ -73,7 +73,6 @@ namespace BetaSurf
             modifyURLPanel.SuspendLayout();
             bookmarkerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)newURLError).BeginInit();
-            bookmarksTableContainer.SuspendLayout();
             SuspendLayout();
             // 
             // backward
@@ -81,10 +80,10 @@ namespace BetaSurf
             backward.Cursor = Cursors.Hand;
             backward.Enabled = false;
             backward.Font = new Font("Arial", 12.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            backward.Location = new Point(9, 27);
+            backward.Location = new Point(9, 32);
             backward.Margin = new Padding(0);
             backward.Name = "backward";
-            backward.Size = new Size(41, 39);
+            backward.Size = new Size(29, 32);
             backward.TabIndex = 0;
             backward.Text = "←";
             backward.UseVisualStyleBackColor = true;
@@ -94,10 +93,10 @@ namespace BetaSurf
             // 
             forward.Enabled = false;
             forward.Font = new Font("Arial", 13F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            forward.Location = new Point(48, 27);
+            forward.Location = new Point(38, 32);
             forward.Margin = new Padding(0);
             forward.Name = "forward";
-            forward.Size = new Size(41, 39);
+            forward.Size = new Size(28, 32);
             forward.TabIndex = 1;
             forward.Text = "→";
             forward.UseVisualStyleBackColor = true;
@@ -160,12 +159,12 @@ namespace BetaSurf
             // homeButton
             // 
             homeButton.Font = new Font("Arial", 13F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            homeButton.Location = new Point(121, 31);
+            homeButton.Location = new Point(116, 32);
             homeButton.Margin = new Padding(0);
             homeButton.Name = "homeButton";
-            homeButton.Size = new Size(40, 33);
+            homeButton.Size = new Size(46, 32);
             homeButton.TabIndex = 8;
-            homeButton.Text = "";
+            homeButton.Text = " 🏠";
             homeButton.UseVisualStyleBackColor = true;
             homeButton.Click += HomeClick;
             // 
@@ -175,10 +174,10 @@ namespace BetaSurf
             settingsButton.ContextMenuStrip = settingsDropDown;
             settingsButton.FlatAppearance.BorderSize = 3;
             settingsButton.Font = new Font("Arial", 11F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            settingsButton.Location = new Point(901, 22);
+            settingsButton.Location = new Point(893, 27);
             settingsButton.Margin = new Padding(0);
             settingsButton.Name = "settingsButton";
-            settingsButton.Size = new Size(56, 47);
+            settingsButton.Size = new Size(46, 41);
             settingsButton.TabIndex = 9;
             settingsButton.Text = "🔧";
             settingsButton.UseVisualStyleBackColor = true;
@@ -448,24 +447,25 @@ namespace BetaSurf
             DedicatedURLLayout.TabIndex = 6;
             DedicatedURLLayout.TabStop = true;
             // 
-            // LoadingLabel
+            // loadingLabel
             // 
-            LoadingLabel.AutoSize = true;
-            LoadingLabel.BackColor = Color.Yellow;
-            LoadingLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            LoadingLabel.Location = new Point(362, 435);
-            LoadingLabel.Name = "LoadingLabel";
-            LoadingLabel.Size = new Size(84, 21);
-            LoadingLabel.TabIndex = 13;
-            LoadingLabel.Text = "Loading...";
-            LoadingLabel.Visible = false;
+            loadingLabel.AutoSize = true;
+            loadingLabel.BackColor = Color.Yellow;
+            loadingLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            loadingLabel.Location = new Point(96, 89);
+            loadingLabel.Name = "loadingLabel";
+            loadingLabel.Size = new Size(84, 21);
+            loadingLabel.TabIndex = 13;
+            loadingLabel.Text = "Loading...";
+            loadingLabel.Visible = false;
             // 
             // showHistory
             // 
             showHistory.ContextMenuStrip = historyDropdown;
-            showHistory.Location = new Point(84, 27);
+            showHistory.Enabled = false;
+            showHistory.Location = new Point(69, 35);
             showHistory.Name = "showHistory";
-            showHistory.Size = new Size(22, 39);
+            showHistory.Size = new Size(25, 24);
             showHistory.TabIndex = 14;
             showHistory.Text = "▼";
             showHistory.UseVisualStyleBackColor = true;
@@ -478,6 +478,11 @@ namespace BetaSurf
             historyDropdown.Name = "historyDropdown";
             historyDropdown.Size = new Size(61, 4);
             // 
+            // dummyToolStripMenuItem
+            // 
+            dummyToolStripMenuItem.Name = "dummyToolStripMenuItem";
+            dummyToolStripMenuItem.Size = new Size(32, 19);
+            // 
             // Home
             // 
             AcceptButton = search;
@@ -485,7 +490,6 @@ namespace BetaSurf
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(966, 471);
             Controls.Add(showHistory);
-            Controls.Add(LoadingLabel);
             Controls.Add(modifyURLPanel);
             Controls.Add(DedicatedURLLayout);
             Controls.Add(bookmarksTableContainer);
@@ -495,6 +499,7 @@ namespace BetaSurf
             Controls.Add(homeButton);
             Controls.Add(displayCodeBox);
             Controls.Add(displayTextBox);
+            Controls.Add(loadingLabel);
             Controls.Add(reload);
             Controls.Add(search);
             Controls.Add(SearchBox);
@@ -509,7 +514,6 @@ namespace BetaSurf
             bookmarkerPanel.ResumeLayout(false);
             bookmarkerPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)newURLError).EndInit();
-            bookmarksTableContainer.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
             // -----------------------------BetaSurf-----------------------------
@@ -554,7 +558,7 @@ namespace BetaSurf
         private ToolStripMenuItem bookmarksToolStripMenuItem;
         private Panel bookmarksTableContainer;
         private FlowLayoutPanel DedicatedURLLayout;
-        private Label LoadingLabel;
+        private Label loadingLabel;
         private Button showHistory;
         private ContextMenuStrip historyDropdown;
         private ToolStripMenuItem dummyToolStripMenuItem;

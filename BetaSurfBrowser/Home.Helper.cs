@@ -1,6 +1,4 @@
-﻿using AngleSharp.Browser.Dom;
-using BetaSurf;
-using BetaSurf.Properties;
+﻿using BetaSurf.Properties;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -13,7 +11,6 @@ namespace BetaSurf
         internal void GoToPage(String GoToPageURL)
         {
             var URL = Utility.ValidateURL(GoToPageURL);
-            Debug.WriteLine(" Going to ... " + URL + " " + IsNavFromHistory);
             if (!IsNavFromHistory)
             {
                 if (CurrentIndex < History.Count - 1)
@@ -23,8 +20,6 @@ namespace BetaSurf
 
                 CurrentIndex = History.Count - 1;
 
-                Debug.WriteLine("History -> " + String.Join(" ", History));
-                Debug.WriteLine(CurrentIndex);
             }
             SearchBox.Text = URL;
             LoadWebPage();
@@ -36,19 +31,17 @@ namespace BetaSurf
         {
             String searchText = SearchBox.Text;
             if (searchText == null) return;
+            
             String searchURL = Utility.ValidateURL(searchText);
             LoadWebPage(searchURL);
         }
 
         internal async Task LoadWebPage(String searchURL)
         {
-            LoadingLabel.Visible = true;
-            displayTextBox.Visible = false;
-            displayCodeBox.Visible = false;
-            DedicatedURLLayout.Visible = false;
-            HttpResponseMessage response = await new HttpClient().GetAsync(searchURL);
+            SetLoadingState(true);
             try
             {
+                HttpResponseMessage response = await new HttpClient().GetAsync(searchURL);
                 String rawHTML = await response.Content.ReadAsStringAsync();
                 this.Text = $"{response.StatusCode.ToString()} - {Utility.GetTitle(rawHTML)}";
                 displayCodeBox.Text = response.StatusCode.ToString();
@@ -59,26 +52,33 @@ namespace BetaSurf
             }
             catch (HttpRequestException httpException)
             {
-                if (httpException.StatusCode == HttpStatusCode.Forbidden |
-                    httpException.StatusCode == HttpStatusCode.BadRequest |
-                    httpException.StatusCode == HttpStatusCode.NotFound)
+                if (httpException.StatusCode == HttpStatusCode.Forbidden | // STATUS CODE : 403
+                    httpException.StatusCode == HttpStatusCode.BadRequest | // STATUS CODE : 400
+                    httpException.StatusCode == HttpStatusCode.NotFound) // STATUS CODE : 404
 
-                    displayTextBox.Text = response.RequestMessage.ToString();
-                displayCodeBox.Text = response.StatusCode.ToString();
+                    displayTextBox.Text = httpException.Message.ToString();
+                displayCodeBox.Text = httpException.StatusCode.ToString();
 
             }
+            // General exception like TitleNotFoundException, NullPointerException if some other error occurs
             catch (Exception exception)
             {
-                Debug.WriteLine("Not a HTTP Exception : " + exception);
+                Debug.WriteLine(" Exception : " + exception);
+                displayTextBox.Text = "Oops... "+ exception.Message;
+                displayCodeBox.Text = "ERROR";
             }
             finally
             {
-                LoadingLabel.Visible = false;
-                displayTextBox.Visible = true;
-                displayCodeBox.Visible = true;
-                DedicatedURLLayout.Visible = true;
+                SetLoadingState(false);
             }
 
+        }
+        private void SetLoadingState(Boolean shouldLoad)
+        {
+            loadingLabel.Visible = shouldLoad;
+            displayTextBox.Visible = !shouldLoad;
+            displayCodeBox.Visible = !shouldLoad;
+            DedicatedURLLayout.Visible = !shouldLoad;
         }
 
         internal async Task LoadBookmarksDataFromCSV()
@@ -105,19 +105,13 @@ namespace BetaSurf
             bookmarksTableContainer.Hide();
         }
 
-        internal void GoodByeClick(object sender, EventArgs e)
-        {
-            this.Close();
-        }
 
         internal void ShowLinksInDedicatedURLPanel(string RawHTML)
         {
             DedicatedURLLayout.Controls.Clear();
             HtmlDocument Document = new();
             Document.LoadHtml(RawHTML);
-
             var Links = Document.DocumentNode.SelectNodes("//a[@href]");
-
             if (Links != null)
             {
                 var firstFiveLinks = Links.Take(5).ToList();
@@ -128,14 +122,14 @@ namespace BetaSurf
                     string Text = link.InnerText.Trim();
                     if (!string.IsNullOrEmpty(HREF))
                     {
-                        LinkLabel LinkLabel = new();
-                        LinkLabel.Text = Text;
-                        LinkLabel.AutoSize = true;
-                        LinkLabel.Cursor = Cursors.Hand;
-                        if (!HREF.StartsWith("http://") && !HREF.StartsWith("https://"))
+                        LinkLabel LinkLabel = new()
                         {
+                            Text = Text,
+                            AutoSize = true,
+                            Cursor = Cursors.Hand
+                        };
+                        if (!HREF.StartsWith("http://") && !HREF.StartsWith("https://"))
                             HREF = SearchBox.Text + HREF;
-                        }
                         LinkLabel.Click += (s, e) => GoToPage(HREF);
 
                         DedicatedURLLayout.Controls.Add(LinkLabel);
@@ -147,11 +141,12 @@ namespace BetaSurf
 
         internal void ClickFromHistoryDropDown(object sender, EventArgs e)
         {
-            Debug.WriteLine(sender + " = sender ~~ event = " + e);
-            if (sender is ToolStripMenuItem menuItem && sender != null)
-            {
-                GoToPage(menuItem.Text);
-            }
+            if (sender is ToolStripMenuItem menuItem && sender != null)  GoToPage(menuItem.Text);
+        }
+
+        internal void GoodByeClick(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

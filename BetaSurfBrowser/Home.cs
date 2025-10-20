@@ -40,6 +40,7 @@ namespace BetaSurf
                 GoToPage(History[CurrentIndex]);
                 IsNavFromHistory = false;
                 forward.Enabled = true;
+                showHistory.Enabled = true;
             }
         }
         private void ForwardClick(object sender, EventArgs e)
@@ -53,6 +54,7 @@ namespace BetaSurf
                 GoToPage(History[CurrentIndex]);
                 IsNavFromHistory = false;
                 backward.Enabled = History.Count > 0;
+                showHistory.Enabled = History.Count > 0;
             }
         }
         private void HistoryDropdownClick(object sender, EventArgs e) {
@@ -83,6 +85,7 @@ namespace BetaSurf
             LoadWebPage();
             BookmarkController.LoadData(Bookmarks);
             backward.Enabled = true;
+            showHistory.Enabled = true;
 
         }
         private void HomeClick(object sender, EventArgs e)

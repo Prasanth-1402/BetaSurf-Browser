@@ -1,4 +1,5 @@
-﻿
+﻿using System.Diagnostics;
+
 namespace BetaSurf
 {
     public partial class BookmarkControl : UserControl
@@ -39,31 +40,39 @@ namespace BetaSurf
         }
         private void BmTableControl_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            var Row = BmTableControl.Rows[e.RowIndex];
-            var Title = Row.Cells["Title"].Value?.ToString();
-            var URL = Row.Cells["URL"].Value?.ToString();
-            if (BmTableControl.Columns[e.ColumnIndex].Name == "Title")
+            try
             {
-                BookmarkSelected?.Invoke(URL);
+                var Row = BmTableControl.Rows[e.RowIndex];
+                var Title = Row.Cells["Title"].Value?.ToString();
+                var URL = Row.Cells["URL"].Value?.ToString();
+                if (BmTableControl.Columns[e.ColumnIndex].Name == "Title")
+                {
+                    BookmarkSelected?.Invoke(URL);
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine("EXception while clicking a cell in Bookmarks Table : "+exception.Source);
             }
         }
 
         private void DeleteBookmark(DataGridViewRow Row)
         {
+
             List<BookmarkDTO> allBookmarks = Utility.GetAllBookmarks();
-            
-            var RowToDelete = allBookmarks.FirstOrDefault(bookmark => bookmark.URL.Equals(Row.Cells["URL"].Value));
+            var RowToDelete = allBookmarks?.FirstOrDefault(bookmark => bookmark.URL.Equals(Row.Cells["URL"].Value));
             if (RowToDelete != null)
             {
-                allBookmarks.Remove(RowToDelete); // removing from the list
+                allBookmarks?.Remove(RowToDelete); // removing from the list
                 BmTableControl.DataSource = allBookmarks;  // removing from the UI
-                Utility.WriteToBookmarks(allBookmarks); // writing the updated list to CSV
+                if (allBookmarks?.Count > 0) Utility.WriteToBookmarks(allBookmarks); // writing the updated list to CSV
             }
         }
 
         private void BmTableControl_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            _previousValue = BmTableControl.Rows[e.RowIndex]?.Cells[e.ColumnIndex]?.Value + "";
+            //Storing the previous value just in case if something went wrong and need to replace the old value
+            _previousValue = BmTableControl.Rows[e.RowIndex]?.Cells[e.ColumnIndex]?.Value + ""; 
         }
 
         private void BmTableControl_CellValueChanged(object sender, DataGridViewCellEventArgs e)
