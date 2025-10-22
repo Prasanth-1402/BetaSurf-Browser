@@ -16,8 +16,11 @@ namespace BetaSurf
                 if (CurrentIndex < History.Count - 1)
                     History.RemoveRange(CurrentIndex + 1, History.Count - CurrentIndex - 1);
                 if (History.Count == 0 || History.Last() != URL)
+                { 
+                    if (History.Contains(URL))
+                        History.Remove(URL);
                     History.Insert(0, URL);
-
+                }
                 CurrentIndex = History.Count - 1;
 
             }
@@ -35,6 +38,7 @@ namespace BetaSurf
             String searchURL = Utility.ValidateURL(searchText);
             LoadWebPage(searchURL);
         }
+
 
         internal async Task LoadWebPage(String searchURL)
         {
@@ -55,9 +59,13 @@ namespace BetaSurf
                 if (httpException.StatusCode == HttpStatusCode.Forbidden | // STATUS CODE : 403
                     httpException.StatusCode == HttpStatusCode.BadRequest | // STATUS CODE : 400
                     httpException.StatusCode == HttpStatusCode.NotFound) // STATUS CODE : 404
-
                     displayTextBox.Text = httpException.Message.ToString();
-                displayCodeBox.Text = httpException.StatusCode.ToString();
+                else
+                {
+                    Debug.WriteLine("HTTP Exception :" + httpException);
+                    displayTextBox.Text = "Something went wrong.. Kindly check the URL";
+                }
+                    displayCodeBox.Text = httpException.StatusCode.ToString();
 
             }
             // General exception like TitleNotFoundException, NullPointerException if some other error occurs
@@ -70,6 +78,7 @@ namespace BetaSurf
             finally
             {
                 SetLoadingState(false);
+                Debug.WriteLine("Setting loading to false..");
             }
 
         }
@@ -141,7 +150,9 @@ namespace BetaSurf
 
         internal void ClickFromHistoryDropDown(object sender, EventArgs e)
         {
-            if (sender is ToolStripMenuItem menuItem && sender != null)  GoToPage(menuItem.Text);
+            if (sender is ToolStripMenuItem menuItem && sender != null)
+                if (menuItem.Text != SearchBox.Text)
+                    GoToPage(menuItem?.Text);
         }
 
         internal void GoodByeClick(object sender, EventArgs e)

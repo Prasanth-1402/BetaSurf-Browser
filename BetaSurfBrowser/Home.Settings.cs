@@ -16,7 +16,7 @@ namespace BetaSurf
         {
             if (modifyURLTextBox.Text.StartsWith("http://") && modifyURLTextBox.TextLength > 11)
             {
-                HomeURL = modifyURLTextBox.Text;
+                Properties.Settings.Default.DEFAULT_HOME_URL = modifyURLTextBox.Text;
                 modifyURLPanel.Visible = false;
             }
             else

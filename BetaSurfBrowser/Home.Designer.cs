@@ -1,6 +1,7 @@
 ﻿
 
 
+
 namespace BetaSurf
 {
     partial class Home
@@ -462,7 +463,7 @@ namespace BetaSurf
             // showHistory
             // 
             showHistory.ContextMenuStrip = historyDropdown;
-            showHistory.Enabled = false;
+            showHistory.Enabled = true;
             showHistory.Location = new Point(69, 35);
             showHistory.Name = "showHistory";
             showHistory.Size = new Size(25, 24);
@@ -518,7 +519,6 @@ namespace BetaSurf
             PerformLayout();
             // -----------------------------BetaSurf-----------------------------
         }
-
 
         #endregion
 

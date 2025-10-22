@@ -1,3 +1,4 @@
+using AngleSharp.Browser.Dom;
 using BetaSurf.Properties;
 using System.Diagnostics;
 using System.Net;
@@ -7,23 +8,28 @@ namespace BetaSurf
     public partial class Home : Form
     {
         private String? ReloadURL;
-        private static String HomeURL = "http://hw.ac.uk";
+        private static String HomeURL = Settings.Default.DEFAULT_HOME_URL;
         private String CurrentURL = HomeURL;
         private Boolean IsNavFromHistory = false;
         private int CurrentIndex = -1;
 
         private BookmarkControl BookmarkController;
         public List<BookmarkDTO> Bookmarks;
-        private List<String> History;
+        private List<String> History = new(5);
         public Home()
         {
             InitializeComponent();
             SearchBox.Text = HomeURL;
-            LoadWebPage(HomeURL);
             BookmarkController = new();
+            LoadWebPage(HomeURL);
             Bookmarks = new(10);
-            History = new();
-            this.Load += async (s, e) => await LoadBookmarksDataFromCSV();
+            this.Load += async (s, e) => {
+                var loadBookmarks = Task.Run(() => LoadBookmarksDataFromCSV());
+                History = await GetHistoryFromFile();
+                CurrentIndex = History.Count;
+                Debug.WriteLine("History count - "+History.Count);
+                await loadBookmarks;
+            };
             BookmarkController.BookmarkSelected += url => GoToURLFromBookMarksTable(url);
         }
 
@@ -37,7 +43,7 @@ namespace BetaSurf
             {
                 IsNavFromHistory = true;
                 CurrentIndex--;
-                GoToPage(History[CurrentIndex]);
+                GoToPage(History[History.Count - CurrentIndex - 1]);
                 IsNavFromHistory = false;
                 forward.Enabled = true;
                 showHistory.Enabled = true;
@@ -51,7 +57,7 @@ namespace BetaSurf
                 CurrentIndex++;
                 Debug.WriteLine("History from forward -> " + String.Join(" ", History));
                 Debug.WriteLine(CurrentIndex);
-                GoToPage(History[CurrentIndex]);
+                GoToPage(History[History.Count - CurrentIndex - 1]);
                 IsNavFromHistory = false;
                 backward.Enabled = History.Count > 0;
                 showHistory.Enabled = History.Count > 0;
@@ -83,9 +89,13 @@ namespace BetaSurf
             CurrentURL = SearchBox.Text;
             GoToPage(CurrentURL);
             LoadWebPage();
+            Debug.WriteLine("Before Adding : " + String.Join(", ", History));
+            //History.Add(CurrentURL);
+            WriteHistoryToFile(History);
             BookmarkController.LoadData(Bookmarks);
             backward.Enabled = true;
             showHistory.Enabled = true;
+            Debug.WriteLine("After Adding : " + String.Join(", ", History));
 
         }
         private void HomeClick(object sender, EventArgs e)

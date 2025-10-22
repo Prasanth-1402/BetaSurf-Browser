@@ -31,5 +31,41 @@ namespace BetaSurf.Properties {
                 return ((string)(this["BOOKMARKS_FILE"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Prasanth\\Desktop\\history.csv")]
+        public string HISTORY_FILE {
+            get {
+                return ((string)(this["HISTORY_FILE"]));
+            }
+            set {
+                this["HISTORY_FILE"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Prasanth\\Desktop\\homeurl.csv")]
+        public string HOME_URL {
+            get {
+                return ((string)(this["HOME_URL"]));
+            }
+            set {
+                this["HOME_URL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://espn.com")]
+        public string DEFAULT_HOME_URL {
+            get {
+                return ((string)(this["DEFAULT_HOME_URL"]));
+            }
+            set {
+                this["DEFAULT_HOME_URL"] = value;
+            }
+        }
     }
 }
