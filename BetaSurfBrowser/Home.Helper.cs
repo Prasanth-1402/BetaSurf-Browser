@@ -1,6 +1,4 @@
-﻿using BetaSurf.Properties;
-using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
@@ -16,7 +14,7 @@ namespace BetaSurf
                 if (CurrentIndex < History.Count - 1)
                     History.RemoveRange(CurrentIndex + 1, History.Count - CurrentIndex - 1);
                 if (History.Count == 0 || History.Last() != URL)
-                { 
+                {
                     if (History.Contains(URL))
                         History.Remove(URL);
                     History.Insert(0, URL);
@@ -34,7 +32,7 @@ namespace BetaSurf
         {
             String searchText = SearchBox.Text;
             if (searchText == null) return;
-            
+
             String searchURL = Utility.ValidateURL(searchText);
             LoadWebPage(searchURL);
         }
@@ -65,14 +63,14 @@ namespace BetaSurf
                     Debug.WriteLine("HTTP Exception :" + httpException);
                     displayTextBox.Text = "Something went wrong.. Kindly check the URL";
                 }
-                    displayCodeBox.Text = httpException.StatusCode.ToString();
+                displayCodeBox.Text = httpException.StatusCode.ToString();
 
             }
             // General exception like TitleNotFoundException, NullPointerException if some other error occurs
             catch (Exception exception)
             {
                 Debug.WriteLine(" Exception : " + exception);
-                displayTextBox.Text = "Oops... "+ exception.Message;
+                displayTextBox.Text = "Oops... " + exception.Message;
                 displayCodeBox.Text = "ERROR";
             }
             finally
@@ -103,7 +101,7 @@ namespace BetaSurf
             bookmarkerPanel.Visible = false;
             bookmarkAdded.Visible = true;
             String newBookmark = $"{bookmarkTitle},{bookmarkURL}"; // format to write in CSV
-            File.AppendAllText(Settings.Default.BOOKMARKS_FILE, Environment.NewLine + newBookmark);
+            File.AppendAllText(FileHandler.BOOKMARKS, Environment.NewLine + newBookmark);
             LoadBookmarksDataFromCSV();
         }
 

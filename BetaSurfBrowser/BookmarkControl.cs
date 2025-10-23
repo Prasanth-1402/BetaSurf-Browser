@@ -6,6 +6,7 @@ namespace BetaSurf
     {
         private String _previousValue = "";
         public event Action<string> BookmarkSelected;
+        public event Action<string> BookmarksClosed;
         public BookmarkControl()
         {
             InitializeComponent();
@@ -18,9 +19,9 @@ namespace BetaSurf
 
         private void BmTableControl_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex == -1 && e.ColumnIndex == -1)
+            if (e.RowIndex < 0 && e.ColumnIndex < 0)
             {
-                BmTableControl.Visible = false;
+                BookmarksClosed?.Invoke("False");
                 return;
             }
 
@@ -34,14 +35,19 @@ namespace BetaSurf
                     MessageBoxButtons.OKCancel,
                     MessageBoxIcon.Warning);
                 //Deleting only after successful confirmation
-                if (IsDelete == DialogResult.OK)   
-                    DeleteBookmark(Row); 
+                if (IsDelete == DialogResult.OK)
+                    DeleteBookmark(Row);
             }
         }
         private void BmTableControl_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             try
             {
+                if (e.RowIndex < 0 && e.ColumnIndex < 0)
+                {
+                    BookmarksClosed?.Invoke("False");
+                    return;
+                }
                 var Row = BmTableControl.Rows[e.RowIndex];
                 var Title = Row.Cells["Title"].Value?.ToString();
                 var URL = Row.Cells["URL"].Value?.ToString();
@@ -52,7 +58,8 @@ namespace BetaSurf
             }
             catch (Exception exception)
             {
-                Debug.WriteLine("EXception while clicking a cell in Bookmarks Table : "+exception.Source);
+                BmTableControl.Visible = false;
+                Debug.WriteLine("Exception while clicking a cell in Bookmarks Table : " + exception.Source);
             }
         }
 
@@ -72,7 +79,7 @@ namespace BetaSurf
         private void BmTableControl_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             //Storing the previous value just in case if something went wrong and need to replace the old value
-            _previousValue = BmTableControl.Rows[e.RowIndex]?.Cells[e.ColumnIndex]?.Value + ""; 
+            _previousValue = BmTableControl.Rows[e.RowIndex]?.Cells[e.ColumnIndex]?.Value + "";
         }
 
         private void BmTableControl_CellValueChanged(object sender, DataGridViewCellEventArgs e)

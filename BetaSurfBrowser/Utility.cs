@@ -1,5 +1,4 @@
 ﻿using AngleSharp.Html.Parser;
-using BetaSurf.Properties;
 using System.Diagnostics;
 
 namespace BetaSurf
@@ -31,24 +30,26 @@ namespace BetaSurf
         {
             try
             {
-                using var Reader = new StreamReader(Settings.Default.BOOKMARKS_FILE);
+                using var Reader = new StreamReader(FileHandler.BOOKMARKS);
                 using var csv = new CsvHelper.CsvReader(Reader, System.Globalization.CultureInfo.InvariantCulture);
                 return csv.GetRecords<BookmarkDTO>().ToList();
             }
-            catch(FileNotFoundException fnException)
+            catch (FileNotFoundException fnException)
             {
-                Debug.WriteLine("File Not Found to fetch the bookmarks!  -> "+ fnException);
+                WriteToBookmarks(new List<BookmarkDTO> { });
+                Debug.WriteLine("File Not Found to fetch the bookmarks!  -> " + fnException);
                 return null;
             }
-            catch (Exception ex) {
-                Debug.WriteLine("Exception in getting bookmarks from file -> "+ ex);
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception in getting bookmarks from file -> " + ex);
                 return null;
             }
         }
 
         internal static void WriteToBookmarks(List<BookmarkDTO> AllBookmarks)
         {
-            var Writer = new StreamWriter(Settings.Default.BOOKMARKS_FILE);
+            var Writer = new StreamWriter(FileHandler.BOOKMARKS);
             var BookmarkFile = new CsvHelper.CsvWriter(Writer, System.Globalization.CultureInfo.InvariantCulture);
             BookmarkFile.WriteRecords(AllBookmarks);
             Writer.Close();

@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace BetaSurf
+﻿namespace BetaSurf
 {
-	partial class Home
-	{
+    partial class Home
+    {
         //--------------------------------  SETTINGS -------------------------------------------
         internal void OpenModifyHomeURLPanel(object sender, EventArgs e)
         {
@@ -17,6 +15,7 @@ namespace BetaSurf
             if (modifyURLTextBox.Text.StartsWith("http://") && modifyURLTextBox.TextLength > 11)
             {
                 Properties.Settings.Default.DEFAULT_HOME_URL = modifyURLTextBox.Text;
+                FileHandler.DEFAULT_HOME_URL = modifyURLTextBox.Text;
                 modifyURLPanel.Visible = false;
             }
             else

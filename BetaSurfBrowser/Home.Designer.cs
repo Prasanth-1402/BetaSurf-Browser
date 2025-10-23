@@ -398,6 +398,7 @@ namespace BetaSurf
             // 
             // bookmarkButton
             // 
+            bookmarkButton.Enabled = false;
             bookmarkButton.Location = new Point(850, 31);
             bookmarkButton.Name = "bookmarkButton";
             bookmarkButton.Size = new Size(40, 33);
@@ -463,7 +464,6 @@ namespace BetaSurf
             // showHistory
             // 
             showHistory.ContextMenuStrip = historyDropdown;
-            showHistory.Enabled = true;
             showHistory.Location = new Point(69, 35);
             showHistory.Name = "showHistory";
             showHistory.Size = new Size(25, 24);
@@ -506,7 +506,7 @@ namespace BetaSurf
             Controls.Add(SearchBox);
             Controls.Add(forward);
             Controls.Add(backward);
-            Cursor = Cursors.Hand;
+            Cursor = Cursors.Default;
             Name = "Home";
             Text = "Beta Surf";
             settingsDropDown.ResumeLayout(false);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace BetaSurf
+﻿namespace BetaSurf
 {
     public partial class DedicatedURLPanel : UserControl
     {
